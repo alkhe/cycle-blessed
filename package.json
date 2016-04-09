@@ -2,9 +2,10 @@
   "name": "cycle-blessed",
   "version": "0.0.1",
   "description": "Cycle.js Blessed Driver.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": ":"
+    "test": ":",
+    "build": "gulp"
   },
   "author": "synchronous",
   "license": "MIT",
@@ -13,7 +14,9 @@
     "rx": "^4.1.0"
   },
   "devDependencies": {
-    "@cycle/core": "^6.0.3"
+    "@cycle/core": "^6.0.3",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2"
   },
   "repository": {
     "type": "git",

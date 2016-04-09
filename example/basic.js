@@ -1,6 +1,6 @@
 import { run } from '@cycle/core';
 import blessed from 'blessed';
-import { makeTermDriver, makeScreenDriver, box } from '..';
+import { makeTermDriver, makeScreenDriver, box } from '../src';
 import { Observable as $ } from 'rx';
 
 let screen = blessed.screen({ smartCSR: true });
