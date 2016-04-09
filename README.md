@@ -16,7 +16,7 @@ $ npm i -S cycle-blessed
 ```js
 import { run } from '@cycle/core';
 import blessed from 'blessed';
-import { makeTermDriver, makeScreenDriver, box } from '../src';
+import { makeTermDriver, makeScreenDriver, box } from 'cycle-blessed';
 import { Observable as $ } from 'rx';
 
 let screen = blessed.screen({ smartCSR: true, useBCE: true });
