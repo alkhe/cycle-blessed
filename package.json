@@ -1,0 +1,32 @@
+{
+  "name": "cycle-blessed",
+  "version": "0.0.1",
+  "description": "Cycle.js Blessed Driver.",
+  "main": "index.js",
+  "scripts": {
+    "test": ":"
+  },
+  "author": "synchronous",
+  "license": "MIT",
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "rx": "^4.1.0"
+  },
+  "devDependencies": {
+    "@cycle/core": "^6.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edge/cycle-blessed.git"
+  },
+  "keywords": [
+    "cycle",
+    "blessed",
+    "terminal",
+    "tty"
+  ],
+  "bugs": {
+    "url": "https://github.com/edge/cycle-blessed/issues"
+  },
+  "homepage": "https://github.com/edge/cycle-blessed#readme"
+}
