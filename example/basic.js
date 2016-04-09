@@ -8,12 +8,10 @@ screen.title = 'Hello, World!';
 
 let PlainText = text => box({ border: { type: 'line', fg: 'blue' } }, text);
 
-run(({ screen: { on } }) => {
-	return {
-		term: $.just(PlainText('Hello, World!')),
-		exit: on('key C-c')
-	}
-}, {
+run(({ screen: { on } }) => ({
+	term: $.just(PlainText('Hello, World!')),
+	exit: on('key C-c')
+}), {
 	term: makeTermDriver(screen),
 	screen: makeScreenDriver(screen),
 	exit: exit$ => exit$.forEach(::process.exit)
