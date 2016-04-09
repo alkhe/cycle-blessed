@@ -1,6 +1,9 @@
 # cycle-blessed
 [Cycle.js](http://cycle.js.org/) drivers for [Blessed](https://github.com/chjj/blessed).
 
+**`example/example.js`**:
+![http://i.imgur.com/NE2AcK4.gif](http://i.imgur.com/NE2AcK4.gif)
+
 ## Installing
 
 ```sh
