@@ -16,26 +16,38 @@ let makeScreenDriver = screen => command$ => {
 	command$.map(c => c(screen));
 	return {
 		on: event => $.create(o => {
-			screen.on(event, x => o.onNext(x));
+			screen.children[0].on(event, x => o.onNext(x));
 			return () => {};
 		}),
-		event: event => $.create(o => {
-			screen.children[0].on(event, x => o.onNext(x));
+		onGlobal: event => $.create(o => {
+			screen.on(event, x => o.onNext(x));
 			return () => {};
 		})
 	};
 };
 
-let h = (name, options, content) => blessed[name]({ ...options, content });
+// TODO support nested arrays
+let fixChildren = children =>
+	(Array.isArray(children) ? children : [children])
+		.map(child => (child === Object(child))
+			? child
+			: text({ content: String(child) }))
+
+let h = (name, options, children = []) =>
+	blessed[name]({
+		...options,
+		children: (options.children || []).concat(fixChildren(children))
+	});
 
 let factory = name => (...args) => h(name, ...args);
 
 let box = factory('box');
 let element = factory('element');
+let text = factory('text');
 
 export {
 	makeTermDriver,
 	makeScreenDriver,
 	h, factory,
-	box, element
+	box, element, text
 }

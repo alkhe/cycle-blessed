@@ -9,14 +9,15 @@ let ClickableBox = clicked => box({
 	width: 20, height: 3,
 	align: 'center', valign: 'middle',
 	tags: true,
+	content: `{bold}${ clicked ? 'Clicked' : 'Click Me!' }{/bold}`,
 	fg: 'white',
 	bg: clicked ? '#e66' : '#6e6',
 	id: 'Button',
 	clickable: true
-}, `{bold}${ clicked ? 'Clicked' : 'Click Me!' }{/bold}`);
+});
 
-run(({ screen: { on, event } }) => {
-	let clicks$ = event('element click')
+run(({ screen: { on } }) => {
+	let clicks$ = on('element click')
 		.filter(box => box.options.id === 'Button')
 		.scan(() => true).startWith(false);
 

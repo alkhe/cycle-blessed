@@ -1,7 +1,7 @@
 # cycle-blessed
 [Cycle.js](http://cycle.js.org/) drivers for [Blessed](https://github.com/chjj/blessed).
 
-**`example/example.js`**:
+**`example/writer.js`**:
 ![http://i.imgur.com/NE2AcK4.gif](http://i.imgur.com/NE2AcK4.gif)
 
 ## Installing
@@ -12,13 +12,14 @@ $ npm i -S cycle-blessed
 
 ## Getting Started
 
+**`example/basic.js`**:
 ```js
 import { run } from '@cycle/core';
 import blessed from 'blessed';
-import { makeTermDriver, makeScreenDriver, box } from 'cycle-blessed';
+import { makeTermDriver, makeScreenDriver, box } from '../src';
 import { Observable as $ } from 'rx';
 
-let screen = blessed.screen({ smartCSR: true });
+let screen = blessed.screen({ smartCSR: true, useBCE: true });
 screen.title = 'Hello, World!';
 
 let PlainText = text => box({ border: { type: 'line', fg: 'blue' } }, text);
@@ -31,7 +32,6 @@ run(({ screen: { on } }) => ({
 	screen: makeScreenDriver(screen),
 	exit: exit$ => exit$.forEach(::process.exit)
 });
-
 ```
 
 ![http://i.imgur.com/WL4RaiN.png](http://i.imgur.com/WL4RaiN.png)
@@ -48,11 +48,15 @@ Takes a stream of Blessed `Element`s.
 
 Takes a stream of operations to the `screen` object (e.g. `screen => screen.realloc()`).
 
-Produces an object containing a stream creator `on`.
+Produces an object containing stream creators `on` and `onGlobal`.
 
 #####`on(event) => Observable`
 
-Takes all events supported by the Blessed `EventEmitter`.
+Takes all events supported by the Blessed `EventEmitter`. Emits events from the root element.
+
+#####`onGlobal(event) => Observable`
+
+Takes all events supported by the Blessed `EventEmitter`. Emits events from the `screen` object.
 
 ```js
 on('key a').forEach(() => console.log('pressed [a]'))
@@ -63,7 +67,7 @@ on('key a').forEach(() => console.log('pressed [a]'))
 Creates a Blessed Element.
 
 ```js
-h('box', {} , 'Hello!');
+h('box', { content: 'Hello!' });
 ```
 
 ###`factory(name) => (options, content) => Element`
@@ -73,9 +77,17 @@ Creates a helper function.
 ```js
 let box = factory('box');
 
-box({}, 'Hello!');
+box({ content: 'Hello!' });
 ```
 
 ###`box(options, content) => Element`
 
 A convenient export of `factory('box')`.
+
+###`element(options, content) => Element`
+
+A convenient export of `factory('element')`.
+
+###`text(options, content) => Element`
+
+A convenient export of `factory('text')`.

@@ -3,7 +3,7 @@ import blessed from 'blessed';
 import { makeTermDriver, makeScreenDriver, box } from '../src';
 import { Observable as $ } from 'rx';
 
-let screen = blessed.screen({ smartCSR: true });
+let screen = blessed.screen({ smartCSR: true, useBCE: true });
 screen.title = 'Hello, World!';
 
 let PlainText = text => box({ border: { type: 'line', fg: 'blue' } }, text);
