@@ -62,7 +62,7 @@ Takes a stream of operations to the `screen` object (e.g. `screen => screen.real
 
 ###`h(name, options = {}, children = []) => Element`
 
-Creates a Blessed Element.
+Creates a Blessed Element. If `children` or one of its elements is a `String`, it will be converted into a `text` node.
 
 ```js
 h('box', { content: 'Hello!' });
@@ -70,7 +70,7 @@ h('box', { content: 'Hello!' });
 
 ###`factory(name) => (options = {}, children = []) => Element`
 
-Creates a helper function.
+Creates a helper function for Blessed Elemets.
 
 ```js
 let box = factory('box');
@@ -81,3 +81,8 @@ box({ content: 'Hello!' });
 ###`x(options = {}, children = []) => Element`
 
 Where `x` is any one of `box`, `element`, `text`, `layout`, `form`, `textarea`, `button`.
+
+## TODO
+- implement diffing to fix defocusing bugs
+  - current workaround is to implement custom elements (not that hard)
+- synthetic event API to improve event selection
