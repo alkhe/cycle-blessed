@@ -16,20 +16,18 @@ $ npm i -S cycle-blessed
 ```js
 import { run } from '@cycle/core';
 import blessed from 'blessed';
-import { makeTermDriver, makeScreenDriver, box } from 'cycle-blessed';
+import { makeTermDriver, box } from 'cycle-blessed';
 import { Observable as $ } from 'rx';
 
-let screen = blessed.screen({ smartCSR: true, useBCE: true });
-screen.title = 'Hello, World!';
+let screen = blessed.screen({ smartCSR: true, useBCE: true, title: 'Hello, World!' });
 
 let PlainText = text => box({ border: { type: 'line', fg: 'blue' } }, text);
 
-run(({ screen: { on } }) => ({
+run(({ term: { on } }) => ({
 	term: $.just(PlainText('Hello, World!')),
 	exit: on('key C-c')
 }), {
 	term: makeTermDriver(screen),
-	screen: makeScreenDriver(screen),
 	exit: exit$ => exit$.forEach(::process.exit)
 });
 ```
@@ -40,13 +38,7 @@ run(({ screen: { on } }) => ({
 
 ###`makeTermDriver(screen) => CycleDriver`
 
-Write-only driver.
-
 Takes a stream of Blessed `Element`s.
-
-###`makeScreenDriver(screen) => CycleDriver`
-
-Takes a stream of operations to the `screen` object (e.g. `screen => screen.realloc()`).
 
 Produces an object containing stream creators `on` and `onGlobal`.
 
@@ -54,15 +46,19 @@ Produces an object containing stream creators `on` and `onGlobal`.
 
 Takes all events supported by the Blessed `EventEmitter`. Emits events from the root element.
 
-#####`onGlobal(event) => Observable`
-
-Takes all events supported by the Blessed `EventEmitter`. Emits events from the `screen` object.
-
 ```js
 on('key a').forEach(() => console.log('pressed [a]'))
 ```
 
-###`h(name, options, content) => Element`
+#####`onGlobal(event) => Observable`
+
+Takes all events supported by the Blessed `EventEmitter`. Emits events from the `screen` object. See `on`.
+
+###`makeScreenDriver(screen) => CycleDriver`
+
+Takes a stream of operations to the `screen` object (e.g. `screen => screen.realloc()`). Produces a stream of the operations' results.
+
+###`h(name, options, children = []) => Element`
 
 Creates a Blessed Element.
 
@@ -70,7 +66,7 @@ Creates a Blessed Element.
 h('box', { content: 'Hello!' });
 ```
 
-###`factory(name) => (options, content) => Element`
+###`factory(name) => (options, children = []) => Element`
 
 Creates a helper function.
 
@@ -80,14 +76,14 @@ let box = factory('box');
 box({ content: 'Hello!' });
 ```
 
-###`box(options, content) => Element`
+###`box(options, children = []) => Element`
 
 A convenient export of `factory('box')`.
 
-###`element(options, content) => Element`
+###`element(options, children = []) => Element`
 
 A convenient export of `factory('element')`.
 
-###`text(options, content) => Element`
+###`text(options, children = []) => Element`
 
 A convenient export of `factory('text')`.
