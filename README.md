@@ -46,8 +46,10 @@ Produces an object containing stream creators `on` and `onGlobal`.
 
 Takes all events supported by the Blessed `EventEmitter`. Emits events from the root element.
 
+The Observable emits an array of arguments per event (an array is necessary because of a limitation of the RxJS pipeline).
+
 ```js
-on('key a').forEach(() => console.log('pressed [a]'))
+on('key a').forEach(([el, ch, key]) => console.log('pressed [a]'))
 ```
 
 #####`onGlobal(event) => Observable`
@@ -58,7 +60,7 @@ Takes all events supported by the Blessed `EventEmitter`. Emits events from the 
 
 Takes a stream of operations to the `screen` object (e.g. `screen => screen.realloc()`). Produces a stream of the operations' results.
 
-###`h(name, options, children = []) => Element`
+###`h(name, options = {}, children = []) => Element`
 
 Creates a Blessed Element.
 
@@ -66,7 +68,7 @@ Creates a Blessed Element.
 h('box', { content: 'Hello!' });
 ```
 
-###`factory(name) => (options, children = []) => Element`
+###`factory(name) => (options = {}, children = []) => Element`
 
 Creates a helper function.
 
@@ -76,14 +78,6 @@ let box = factory('box');
 box({ content: 'Hello!' });
 ```
 
-###`box(options, children = []) => Element`
+###`x(options = {}, children = []) => Element`
 
-A convenient export of `factory('box')`.
-
-###`element(options, children = []) => Element`
-
-A convenient export of `factory('element')`.
-
-###`text(options, children = []) => Element`
-
-A convenient export of `factory('text')`.
+Where `x` is any one of `box`, `element`, `text`, `layout`, `form`, `textarea`, `button`.

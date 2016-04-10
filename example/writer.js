@@ -16,7 +16,7 @@ let HelloBox = text => box({
 });
 
 run(({ term: { on } }) => {
-	let text$ = on('keypress').scan((a, x) => a + x, '').startWith('');
+	let text$ = on('keypress').pluck(0).scan((a, x) => a + x, '').startWith('');
 	return {
 		term: text$.map(HelloBox),
 		exit: on('key C-c')

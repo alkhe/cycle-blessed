@@ -18,6 +18,7 @@ let ClickableBox = clicked => box({
 
 run(({ term: { on } }) => {
 	let clicks$ = on('element click')
+		.pluck(0)
 		.filter(box => box.options.id === 'Button')
 		.scan(() => true).startWith(false);
 
