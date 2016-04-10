@@ -1,8 +1,8 @@
 import { run } from '@cycle/core';
 import blessed from 'blessed';
-import { makeTermDriver, makeScreenDriver, box } from '../src';
+import { makeTermDriver, box } from '../src';
 
-let screen = blessed.screen({ smartCSR: true, useBCE: true });
+let screen = blessed.screen({ smartCSR: true, useBCE: true, title: 'Writer' });
 
 let HelloBox = text => box({
 	top: 'center', left: 'center',
@@ -15,7 +15,7 @@ let HelloBox = text => box({
 	}
 });
 
-run(({ screen: { on } }) => {
+run(({ term: { on } }) => {
 	let text$ = on('keypress').scan((a, x) => a + x, '').startWith('');
 	return {
 		term: text$.map(HelloBox),
@@ -23,6 +23,5 @@ run(({ screen: { on } }) => {
 	}
 }, {
 	term: makeTermDriver(screen),
-	screen: makeScreenDriver(screen),
 	exit: exit$ => exit$.forEach(::process.exit)
 });

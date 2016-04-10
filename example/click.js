@@ -1,8 +1,8 @@
 import { run } from '@cycle/core';
 import blessed from 'blessed';
-import { makeTermDriver, makeScreenDriver, box } from '../src';
+import { makeTermDriver, box } from '../src';
 
-let screen = blessed.screen({ smartCSR: true, useBCE: true });
+let screen = blessed.screen({ smartCSR: true, useBCE: true, title: 'Click' });
 
 let ClickableBox = clicked => box({
 	top: 'center', left: 'center',
@@ -16,7 +16,7 @@ let ClickableBox = clicked => box({
 	clickable: true
 });
 
-run(({ screen: { on } }) => {
+run(({ term: { on } }) => {
 	let clicks$ = on('element click')
 		.filter(box => box.options.id === 'Button')
 		.scan(() => true).startWith(false);
@@ -27,6 +27,5 @@ run(({ screen: { on } }) => {
 	};
 }, {
 	term: makeTermDriver(screen),
-	screen: makeScreenDriver(screen),
 	exit: exit$ => exit$.forEach(::process.exit)
 });

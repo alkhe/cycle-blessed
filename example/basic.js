@@ -1,18 +1,16 @@
 import { run } from '@cycle/core';
 import blessed from 'blessed';
-import { makeTermDriver, makeScreenDriver, box } from '../src';
+import { makeTermDriver, box } from '../src';
 import { Observable as $ } from 'rx';
 
-let screen = blessed.screen({ smartCSR: true, useBCE: true });
-screen.title = 'Hello, World!';
+let screen = blessed.screen({ smartCSR: true, useBCE: true, title: 'Hello, World!' });
 
 let PlainText = text => box({ border: { type: 'line', fg: 'blue' } }, text);
 
-run(({ screen: { on } }) => ({
+run(({ term: { on } }) => ({
 	term: $.just(PlainText('Hello, World!')),
 	exit: on('key C-c')
 }), {
 	term: makeTermDriver(screen),
-	screen: makeScreenDriver(screen),
 	exit: exit$ => exit$.forEach(::process.exit)
 });
