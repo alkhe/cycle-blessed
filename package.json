@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": ":",
-    "build": "gulp"
+    "build": "gulp",
+    "prepublish": "gulp"
   },
   "author": "synchronous",
   "license": "MIT",
