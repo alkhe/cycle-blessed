@@ -32,7 +32,7 @@ run(({ term: { on } }) => ({
 });
 ```
 
-![http://i.imgur.com/WL4RaiN.png](http://i.imgur.com/WL4RaiN.png)
+![http://i.imgur.com/zOQknts.png](http://i.imgur.com/zOQknts.png)
 
 ## API
 
@@ -81,6 +81,26 @@ box({ content: 'Hello!' });
 ###`x(options = {}, children = []) => Element`
 
 Where `x` is any one of `box`, `element`, `text`, `layout`, `form`, `textarea`, `button`.
+
+## Examples
+
+**example/basic.js**
+
+![http://i.imgur.com/zOQknts.png](http://i.imgur.com/zOQknts.png)
+
+**example/click.js**
+
+![http://i.imgur.com/IOA1AoN.png](http://i.imgur.com/IOA1AoN.png)
+![http://i.imgur.com/ai34uJT.png](http://i.imgur.com/ai34uJT.png)
+
+**example/input.js**
+
+![http://i.imgur.com/J1oYcuL.png](http://i.imgur.com/J1oYcuL.png)
+![http://i.imgur.com/NomEesn.png](http://i.imgur.com/NomEesn.png)
+
+**example/writer.js**
+
+![http://i.imgur.com/vnkp0pi.png](http://i.imgur.com/vnkp0pi.png)
 
 ## TODO
 - implement diffing to fix defocusing bugs
