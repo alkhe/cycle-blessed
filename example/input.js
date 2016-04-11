@@ -5,7 +5,7 @@ import { Observable as $ } from 'rx';
 
 // for the unfocus bug, see `src/index.js` for more info
 
-let screen = blessed.screen({ smartCSR: true, useBCE: true, title: 'Hello, World!' });
+let screen = blessed.screen({ smartCSR: true, useBCE: true, title: 'Form Example' });
 
 let Entry = value => textarea({
 	id: 'Entry',
