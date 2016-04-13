@@ -56,19 +56,22 @@ let Form = (value, result) => form({
 }, [Entry(value), SubmitButton(), Result(result)])
 
 run(({ term: { on } }) => {
-	let text$ = on('element keypress').pluck(0)
-		.filter(el => el.options.id === 'Entry')
-		.pluck('value')
-		.startWith('Type in me!');
+	let text$ = on({
+		type: 'keypress',
+		id: 'Entry',
+		view: [0, 'value']
+	}).startWith('Type in me!');
 
-	let submit$ = on('element press').pluck(0)
-		.filter(el => el.options.id === 'Submit');
+	let submit$ = on({
+		type: 'press',
+		id: 'Submit'
+	});
 
 	let result$ = text$.sample(submit$).startWith('');
 
 	return {
 		term: $.combineLatest(text$, result$, Form),
-		exit: on('element keypress').filter(([,,key]) => key.full === 'C-c')
+		exit: on({ type: 'keypress', key: 'C-c' })
 	};
 }, {
 	term: makeTermDriver(screen),

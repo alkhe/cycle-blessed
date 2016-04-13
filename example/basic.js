@@ -7,9 +7,9 @@ let screen = blessed.screen({ smartCSR: true, useBCE: true, title: 'Hello, World
 
 let PlainText = text => box({ border: { type: 'line', fg: 'blue' } }, text);
 
-run(({ term: { on } }) => ({
+run(({ term }) => ({
 	term: $.just(PlainText('Hello, World!')),
-	exit: on('key C-c')
+	exit: term.on('key C-c')
 }), {
 	term: makeTermDriver(screen),
 	exit: exit$ => exit$.forEach(::process.exit)

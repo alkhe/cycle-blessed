@@ -1,6 +1,10 @@
 import blessed from 'blessed';
 import { Observable as $ } from 'rx';
 
+let isObject = a => a === Object(a);
+
+let singleton = a => Array.isArray(a) ? a : [a];
+
 let makeTermDriver = screen => {
 	let root = h('element', { keyable: true, clickable: true, children: [] });
 	screen.append(root);
@@ -17,21 +21,50 @@ let makeTermDriver = screen => {
 			screen.render();
 		});
 
-		// cached listeners for each event
-		let rootListeners = {},
-			globalListeners = {};
+		let makeComplexEvent = (stream, { id, view, key, scheme }) => [
+				[id, s => s.filter(([el]) => el.options.id === id)],
+				[view, s => s.pluck(...singleton(view))],
+				[key, s => s.filter(([,,k]) => k.full === key)],
+				[scheme, scheme]
+			]
+			.filter(([x]) => x !== undefined)
+			.reduce((x, [,f]) => f(x), stream);
+
+		let makeEvent = node => {
+			// cached listeners
+			let listeners = {};
+
+			return event => {
+				let complex = isObject(event);
+
+				// if event is an object, then get the type
+				// otherwise the event itself is the type
+				let eventName = complex
+					? (event.local
+						? event.type
+						: `element ${ event.type }`)
+					: event;
+
+				// if listener exists, just take that
+				// otherwise create a new listener
+				let stream = listeners[eventName]
+					? listeners[eventName]
+					: listeners[eventName] = $.create(o =>
+						void node.on(eventName, (...args) => o.onNext(args))
+					);
+
+				// if event is an object, apply the modifiers
+				// otherwise just return the raw listener
+
+				return complex
+					? makeComplexEvent(stream, event)
+					: stream;
+			};
+		};
 
 		return {
-			on: event => rootListeners[event]
-				? rootListeners[event]
-				: rootListeners[event] = $.create(o =>
-					void root.on(event, (...args) => o.onNext(args))
-				),
-			onGlobal: event => globalListeners[event]
-				? globalListeners[event]
-				: globalListeners[event] = $.create(o =>
-					void screen.on(event, (...args) => o.onNext(args))
-				)
+			on: makeEvent(root),
+			onGlobal: makeEvent(screen)
 		};
 	}
 }
@@ -43,8 +76,8 @@ let makeScreenDriver = screen => command$ =>
 // turns strings into text nodes
 // TODO support nested arrays
 let fixChildren = children =>
-	(Array.isArray(children) ? children : [children])
-		.map(child => (child === Object(child))
+	singleton(children)
+		.map(child => isObject(child)
 			? child
 			: text({ content: String(child) }))
 
@@ -74,3 +107,5 @@ export {
 	layout,
 	form, textarea, button
 }
+
+export * as schemes from './schemes';

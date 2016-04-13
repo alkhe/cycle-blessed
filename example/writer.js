@@ -16,10 +16,12 @@ let HelloBox = text => box({
 });
 
 run(({ term: { on } }) => {
-	let text$ = on('keypress').pluck(0).scan((a, x) => a + x, '').startWith('');
+	let text$ = on({ type: 'keypress', view: 1 })
+		.scan((str, char) => str + char, '').startWith('');
+
 	return {
 		term: text$.map(HelloBox),
-		exit: on('key C-c')
+		exit: on({ type: 'keypress', key: 'C-c' })
 	}
 }, {
 	term: makeTermDriver(screen),
