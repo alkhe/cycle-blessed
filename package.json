@@ -2,11 +2,12 @@
   "name": "cycle-blessed",
   "version": "0.0.3",
   "description": "Cycle.js Blessed Driver.",
-  "main": "lib/index.js",
+  "main": "index.js",
   "scripts": {
     "test": ":",
     "build": "gulp",
-    "prepublish": "gulp"
+    "prepublish": "gulp",
+    "install": "mv lib/* . && rmdir lib"
   },
   "author": "synchronous",
   "license": "MIT",
