@@ -1,6 +1,7 @@
 import { run } from '@cycle/core';
 import blessed from 'blessed';
-import { makeTermDriver, box, schemes } from '../src';
+import { makeTermDriver, box } from '../src';
+import { id, key, idempotent } from '../src/transform';
 
 let screen = blessed.screen({ smartCSR: true, useBCE: true, title: 'Click' });
 
@@ -17,15 +18,12 @@ let ClickableBox = clicked => box({
 });
 
 run(({ term: { on } }) => {
-	let clicks$ = on({
-		type: 'click',
-		id: 'Button',
-		scheme: schemes.idempotent(true)
-	}).startWith(false);
+	let clicks$ = on('*click', [id('Button'), idempotent(true)])
+		.startWith(false);
 
 	return {
 		term: clicks$.map(ClickableBox),
-		exit: on({ type: 'keypress', key: 'C-c' })
+		exit: on('*keypress', key('C-c'))
 	};
 }, {
 	term: makeTermDriver(screen),

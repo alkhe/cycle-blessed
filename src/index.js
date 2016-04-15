@@ -1,9 +1,6 @@
 import blessed from 'blessed';
 import { Observable as $ } from 'rx';
-
-let isObject = a => a === Object(a);
-
-let singleton = a => Array.isArray(a) ? a : [a];
+import { isObject, singleton } from './util';
 
 let makeTermDriver = screen => {
 	let root = h('element', { keyable: true, clickable: true, children: [] });
@@ -21,44 +18,30 @@ let makeTermDriver = screen => {
 			screen.render();
 		});
 
-		let makeComplexEvent = (stream, { id, view, key, scheme }) => [
-				[id, s => s.filter(([el]) => el.options.id === id)],
-				[view, s => s.pluck(...singleton(view))],
-				[key, s => s.filter(([,,k]) => k.full === key)],
-				[scheme, scheme]
-			]
-			.filter(([x]) => x !== undefined)
-			.reduce((x, [,f]) => f(x), stream);
-
 		let makeEvent = node => {
 			// cached listeners
 			let listeners = {};
 
-			return event => {
-				let complex = isObject(event);
+			return (eventString, transform = []) => {
+				let nested = eventString[0] === '*';
 
 				// if event is an object, then get the type
 				// otherwise the event itself is the type
-				let eventName = complex
-					? (event.local
-						? event.type
-						: `element ${ event.type }`)
-					: event;
+				let eventName = nested
+					? `element ${ eventString.slice(1) }`
+					: eventString;
 
 				// if listener exists, just take that
 				// otherwise create a new listener
 				let stream = listeners[eventName]
 					? listeners[eventName]
 					: listeners[eventName] = $.create(o =>
-						void node.on(eventName, (...args) => o.onNext(args))
+					void node.on(eventName, (...args) => o.onNext(args))
 					);
 
-				// if event is an object, apply the modifiers
+				// if event is an object, apply the transforms
 				// otherwise just return the raw listener
-
-				return complex
-					? makeComplexEvent(stream, event)
-					: stream;
+				return singleton(transform).reduce((s, f) => f(s), stream);
 			};
 		};
 
@@ -108,4 +91,4 @@ export {
 	form, textarea, button
 }
 
-export * as schemes from './schemes';
+export * as t from './transform';
