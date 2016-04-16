@@ -159,5 +159,3 @@ Toggles between true and false for every click, starting with `false`.
 ## TODO
 - implement diffing to fix defocusing bugs
   - current workaround is to implement custom elements (not that hard)
-- synthetic event API to improve event selection
-  - progress on https://github.com/edge/cycle-blessed/tree/synthetic
