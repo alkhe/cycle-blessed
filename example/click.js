@@ -1,11 +1,11 @@
 import { run } from '@cycle/core';
 import blessed from 'blessed';
-import { makeTermDriver, box } from '../src';
-import { id, key, idempotent } from '../src/transform';
+import { makeTermDriver, button } from '../src';
+import { id, key, constant } from '../src/transform';
 
 let screen = blessed.screen({ smartCSR: true, useBCE: true, title: 'Click' });
 
-let ClickableBox = clicked => box({
+let ClickableBox = clicked => button({
 	top: 'center', left: 'center',
 	width: 20, height: 3,
 	align: 'center', valign: 'middle',
@@ -14,11 +14,11 @@ let ClickableBox = clicked => box({
 	fg: 'white',
 	bg: clicked ? '#e66' : '#6e6',
 	id: 'Button',
-	clickable: true
+	mouse: true
 });
 
 run(({ term: { on } }) => {
-	let clicks$ = on('*click', [id('Button'), idempotent(true)])
+	let clicks$ = on('*press', [id('Button'), constant(true)])
 		.startWith(false);
 
 	return {

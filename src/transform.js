@@ -7,8 +7,11 @@ export let view = (...v) =>
 export let key = k =>
 	s => s.filter(([,,ek]) => ek.full === k);
 
-export let toggle =
-	s => s.scan(a => !a);
+export let constant = c =>
+	s => s.map(() => c);
 
-export let idempotent = i =>
-	s => s.map(() => i);
+export let init = (...i) =>
+	s => s.startWith(...i);
+
+export let toggle = i =>
+	s => s.scan(a => !a, !i);
