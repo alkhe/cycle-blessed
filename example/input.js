@@ -1,6 +1,7 @@
 import { run } from '@cycle/core';
 import blessed from 'blessed';
 import { makeTermDriver, form, textarea, text, button } from '../src';
+import { id, view, key } from '../src/transform';
 import { Observable as $ } from 'rx';
 
 // for the unfocus bug, see `src/index.js` for more info
@@ -56,19 +57,16 @@ let Form = (value, result) => form({
 }, [Entry(value), SubmitButton(), Result(result)])
 
 run(({ term: { on } }) => {
-	let text$ = on('element keypress').pluck(0)
-		.filter(el => el.options.id === 'Entry')
-		.pluck('value')
+	let text$ = on('*keypress', [id('Entry'), view(0, 'value')])
 		.startWith('Type in me!');
 
-	let submit$ = on('element press').pluck(0)
-		.filter(el => el.options.id === 'Submit');
+	let submit$ = on('*press', id('Submit'));
 
 	let result$ = text$.sample(submit$).startWith('');
 
 	return {
 		term: $.combineLatest(text$, result$, Form),
-		exit: on('element keypress').filter(([,,key]) => key.full === 'C-c')
+		exit: on('*keypress', key('C-c'))
 	};
 }, {
 	term: makeTermDriver(screen),

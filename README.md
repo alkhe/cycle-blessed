@@ -21,11 +21,11 @@ import { Observable as $ } from 'rx';
 
 let screen = blessed.screen({ smartCSR: true, useBCE: true, title: 'Hello, World!' });
 
-let PlainText = text => box({ border: { type: 'line', fg: 'blue' } }, text);
+let BlueBox = text => box({ border: { type: 'line', fg: 'blue' } }, text);
 
-run(({ term: { on } }) => ({
-	term: $.just(PlainText('Hello, World!')),
-	exit: on('key C-c')
+run(({ term }) => ({
+	term: $.just(BlueBox('Hello, World!')),
+	exit: term.on('key C-c')
 }), {
 	term: makeTermDriver(screen),
 	exit: exit$ => exit$.forEach(::process.exit)
@@ -42,17 +42,19 @@ Takes a stream of Blessed `Element`s.
 
 Produces an object containing stream creators `on` and `onGlobal`.
 
-#####`on(event) => Observable`
+#####`on(event, transform = []) => Observable`
 
-Takes all events supported by the Blessed `EventEmitter`. Emits events from the root element.
+Takes all events supported by the Blessed `EventEmitter`. Emits events from the root element. Optionally, you can specify arbitrary stream transformers as `transform`. See [API/transform](#apitransform) for a list of available transformers.
+
+All nested events in the form of `element event` can be abbreviated to `*event`.
 
 The Observable emits an array of arguments per event (an array is necessary because of a limitation of the RxJS pipeline).
 
 ```js
-on('key a').forEach(([el, ch, key]) => console.log('pressed [a]'))
+on('key a').forEach(([el, ch, key]) => console.log(`pressed [${ ch }]`))
 ```
 
-#####`onGlobal(event) => Observable`
+#####`onGlobal(event, transform = []) => Observable`
 
 Takes all events supported by the Blessed `EventEmitter`. Emits events from the `screen` object. See `on`.
 
@@ -81,6 +83,58 @@ box({ content: 'Hello!' });
 ###`x(options = {}, children = []) => Element`
 
 Where `x` is any one of `box`, `element`, `text`, `layout`, `form`, `textarea`, `button`.
+
+## API/transform
+
+Transforms are helper functions that help to reduce boilerplate for common UI and data idioms.
+
+###`id(i) => stream => Stream`
+
+```js
+on('*click', id('Submit'))
+```
+
+Emits all clicks on elements that have an `id` of `'Submit'`.
+
+###`view(...v) => stream => Stream`
+
+```js
+on('*click', view(0, 'value'))
+```
+
+Emits all clicks, plucking the first element and then the `value` property.
+
+###`key(k) => stream => Stream`
+
+```js
+on('*keypress', key('C-c'))
+```
+
+Emits all keypresses in which `'C-c'` was entered.
+
+###`constant(i) => stream => Stream`
+
+```js
+on('*click', constant(true))
+```
+
+Emits `true` for every click.
+
+###`init(...i) => stream => Stream`
+
+```js
+on('*keypress', init({}))
+```
+
+Emits every keypress, starting with `{}`.
+
+###`toggle(init) => stream => Stream`
+
+```js
+on('*click', toggle(false))
+```
+
+Toggles between true and false for every click, starting with `false`.
 
 ## Examples
 
