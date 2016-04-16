@@ -1,6 +1,6 @@
 {
   "name": "cycle-blessed",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Cycle.js Blessed Driver.",
   "main": "index.js",
   "scripts": {
