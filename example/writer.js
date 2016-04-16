@@ -16,9 +16,9 @@ let HelloBox = text => box({
 	}
 });
 
-run(({ term: { on } }) => {
+run(({ term: { on } }) => {	
 	let text$ = on('*keypress', view(1))
-		.scan((str, char) => str + char, '').startWith('');
+		.startWith('').scan((str, char) => str + char);
 
 	return {
 		term: text$.map(HelloBox),
