@@ -12,13 +12,13 @@
   "author": "synchronous",
   "license": "MIT",
   "dependencies": {
-    "rx": "^4.1.0"
+    "xstream": "^2.4.2"
   },
   "peerDependencies": {
     "blessed": "^0.1.81"
   },
   "devDependencies": {
-    "@cycle/core": "^6.0.3",
+    "@cycle/xstream-run": "^1.1.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2"
   },
