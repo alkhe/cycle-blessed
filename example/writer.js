@@ -1,4 +1,4 @@
-import { run } from '@cycle/core';
+import { run } from '@cycle/xstream-run';
 import blessed from 'blessed';
 import { makeTermDriver, box } from '../src';
 import { view, key } from '../src/transform';
@@ -16,9 +16,9 @@ let HelloBox = text => box({
 	}
 });
 
-run(({ term: { on } }) => {	
+run(({ term: { on } }) => {
 	let text$ = on('*keypress', view(1))
-		.startWith('').scan((str, char) => str + char);
+		.fold((str, char) => str + char, '');
 
 	return {
 		term: text$.map(HelloBox),
@@ -26,5 +26,9 @@ run(({ term: { on } }) => {
 	}
 }, {
 	term: makeTermDriver(screen),
-	exit: exit$ => exit$.forEach(::process.exit)
+	exit: exit$ => exit$.addListener({
+		next: ::process.exit,
+		error: ::process.exit,
+		complete: ::process.exit
+	})
 });

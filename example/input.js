@@ -1,8 +1,8 @@
-import { run } from '@cycle/core';
+import { run } from '@cycle/xstream-run';
 import blessed from 'blessed';
 import { makeTermDriver, form, textarea, text, button } from '../src';
 import { id, view, key } from '../src/transform';
-import { Observable as $ } from 'rx';
+import $ from 'xstream';
 
 // for the unfocus bug, see `src/index.js` for more info
 
@@ -62,13 +62,17 @@ run(({ term: { on } }) => {
 
 	let submit$ = on('*press', id('Submit'));
 
-	let result$ = text$.sample(submit$).startWith('');
+	let result$ = text$.map(::submit$.mapTo).flatten().startWith('');
 
 	return {
-		term: $.combineLatest(text$, result$, Form),
+		term: $.combine(Form, text$, result$),
 		exit: on('*keypress', key('C-c'))
 	};
 }, {
 	term: makeTermDriver(screen),
-	exit: exit$ => exit$.forEach(::process.exit)
+	exit: exit$ => exit$.addListener({
+		next: ::process.exit,
+		error: ::process.exit,
+		complete: ::process.exit
+	})
 });

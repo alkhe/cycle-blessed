@@ -1,21 +1,27 @@
 import blessed from 'blessed';
-import { Observable as $ } from 'rx';
+import $ from 'xstream';
 import { isObject, singleton } from './util';
+
+let nop = () => {};
 
 let makeTermDriver = screen => {
 	let root = h('element', { keyable: true, clickable: true, children: [] });
 	screen.append(root);
 
 	return vt$ => {
-		vt$.forEach(vt => {
-			// TODO implement diffing
-			// blessed only performs simple diffing
-			// problem visible in `example/input.js`
-			// don't use blessed textarea for now;
-			// implement custom inputs as in `example/writer.js`
-			root.children = [];
-			root.append(vt);
-			screen.render();
+		vt$.addListener({
+			next: vt => {
+				// TODO implement diffing
+				// blessed only performs simple diffing
+				// problem visible in `example/input.js`
+				// don't use blessed textarea for now;
+				// implement custom inputs as in `example/writer.js`
+				root.children = [];
+				root.append(vt);
+				screen.render();
+			},
+			error: nop,
+			complete: nop
 		});
 
 		let makeEvent = node => {
@@ -35,9 +41,10 @@ let makeTermDriver = screen => {
 				// otherwise create a new listener
 				let stream = listeners[eventName]
 					? listeners[eventName]
-					: listeners[eventName] = $.create(o =>
-					void node.on(eventName, (...args) => o.onNext(args))
-					);
+					: listeners[eventName] = $.create({
+						start: sub => node.on(eventName, (...args) => sub.next(args)),
+						stop: nop
+					});
 
 				// if event is an object, apply the transforms
 				// otherwise just return the raw listener

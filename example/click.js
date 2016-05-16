@@ -1,4 +1,4 @@
-import { run } from '@cycle/core';
+import { run } from '@cycle/xstream-run';
 import blessed from 'blessed';
 import { makeTermDriver, button } from '../src';
 import { id, key, constant } from '../src/transform';
@@ -27,5 +27,9 @@ run(({ term: { on } }) => {
 	};
 }, {
 	term: makeTermDriver(screen),
-	exit: exit$ => exit$.forEach(::process.exit)
+	exit: exit$ => exit$.addListener({
+		next: ::process.exit,
+		error: ::process.exit,
+		complete: ::process.exit
+	})
 });
