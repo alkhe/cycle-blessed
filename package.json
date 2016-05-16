@@ -12,8 +12,10 @@
   "author": "synchronous",
   "license": "MIT",
   "dependencies": {
-    "blessed": "^0.1.81",
     "rx": "^4.1.0"
+  },
+  "peerDependencies": {
+    "blessed": "^0.1.81"
   },
   "devDependencies": {
     "@cycle/core": "^6.0.3",
